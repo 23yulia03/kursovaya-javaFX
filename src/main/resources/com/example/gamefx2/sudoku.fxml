@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox alignment="center" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.gamefx2.Controller">
+<VBox alignment="center" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.gamefx2.Controller">
     <Label fx:id="rulesLabel" style="-fx-font-size: 14px; -fx-padding: 10px;" />
-    <GridPane fx:id="gridPane" />
-    <Button fx:id="checkButton" text="Проверить решение" onAction="#checkSolution" />
+    <GridPane fx:id="gridPane" alignment="TOP_CENTER" />
+    <Button fx:id="checkButton" onAction="#checkSolution" text="Проверить решение" />
 </VBox>

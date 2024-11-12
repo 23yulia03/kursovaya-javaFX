@@ -16,7 +16,7 @@ public class Main extends Application {
         controller.initializeGame();
 
         primaryStage.setTitle("Судоку");
-        primaryStage.setScene(new Scene(root, 450, 550));
+        primaryStage.setScene(new Scene(root, 500, 700));
         primaryStage.show();
     }
 
