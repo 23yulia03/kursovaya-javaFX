@@ -60,6 +60,17 @@ public class Controller {
                 gridPane.add(textField, col, row);
             }
         }
+
+        // Добавление границ для квадратов 3x3
+        for (int row = 0; row < 9; row += 3) {
+            for (int col = 0; col < 9; col += 3) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        cells[row + i][col + j].setStyle(cells[row + i][col + j].getStyle() + " -fx-border-color: black; -fx-border-width: 1px;");
+                    }
+                }
+            }
+        }
     }
 
     private void initializeRules() {
