@@ -46,14 +46,14 @@ public class Controller {
 
                 // Выделение квадратов 3x3
                 if ((row / 3 + col / 3) % 2 == 0) {
-                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #f0f0f0;");
+                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #f0f0f0; -fx-border-color: black; -fx-border-width: 0.5px;");
                 } else {
-                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #ffffff;");
+                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #ffffff; -fx-border-color: black; -fx-border-width: 0.5px;");
                 }
 
                 // Выделение цифр по умолчанию
                 if (board[row][col] != 0) {
-                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #d0d0d0; -fx-text-fill: #000000;");
+                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #d0d0d0; -fx-text-fill: #000000; -fx-border-color: black; -fx-border-width: 0.5px;");
                 }
 
                 cells[row][col] = textField;
