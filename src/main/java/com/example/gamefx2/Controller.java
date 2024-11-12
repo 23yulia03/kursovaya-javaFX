@@ -23,7 +23,7 @@ public class Controller {
     private Label rulesLabel;
 
     private TextField[][] cells;
-    private SudokuGame game;
+    private SudokuGameInterface game;
 
     public void initializeGame() {
         game = new ClassicSudoku();
@@ -44,31 +44,30 @@ public class Controller {
                 textField.setText(board[row][col] == 0 ? "" : String.valueOf(board[row][col]));
                 textField.setEditable(board[row][col] == 0);
 
-                // Выделение квадратов 3x3
+                String baseStyle = "-fx-font-size: 20px; -fx-border-color: black; -fx-border-width: 0.5px;";
+
+                // Применение фона для блоков 3x3
                 if ((row / 3 + col / 3) % 2 == 0) {
-                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #f0f0f0; -fx-border-color: black; -fx-border-width: 0.5px;");
+                    baseStyle += "-fx-background-color: #f0f0f0;";
                 } else {
-                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #ffffff; -fx-border-color: black; -fx-border-width: 0.5px;");
+                    baseStyle += "-fx-background-color: #ffffff;";
                 }
 
-                // Выделение цифр по умолчанию
+                // Задаём стиль для начальных (нередактируемых) чисел
                 if (board[row][col] != 0) {
-                    textField.setStyle("-fx-font-size: 20px; -fx-background-color: #d0d0d0; -fx-text-fill: #000000; -fx-border-color: black; -fx-border-width: 0.5px;");
+                    baseStyle += "-fx-background-color: #d0d0d0; -fx-text-fill: #000000;";
                 }
+
+                // Жирные границы для квадратов 3x3
+                if (row % 3 == 0) baseStyle += " -fx-border-top-width: 2px;";
+                if (col % 3 == 0) baseStyle += " -fx-border-left-width: 2px;";
+                if (row == 8) baseStyle += " -fx-border-bottom-width: 2px;";
+                if (col == 8) baseStyle += " -fx-border-right-width: 2px;";
+
+                textField.setStyle(baseStyle);
 
                 cells[row][col] = textField;
                 gridPane.add(textField, col, row);
-            }
-        }
-
-        // Добавление границ для квадратов 3x3
-        for (int row = 0; row < 9; row += 3) {
-            for (int col = 0; col < 9; col += 3) {
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        cells[row + i][col + j].setStyle(cells[row + i][col + j].getStyle() + " -fx-border-color: black; -fx-border-width: 1px;");
-                    }
-                }
             }
         }
     }
