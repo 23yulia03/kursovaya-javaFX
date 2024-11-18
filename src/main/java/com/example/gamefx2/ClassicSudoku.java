@@ -4,6 +4,12 @@ import java.util.Random;
 
 public class ClassicSudoku extends SudokuGame {
 
+    private Difficulty difficulty = Difficulty.MEDIUM;
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
     @Override
     public void initializeGame() {
         solution = generateSolution();
@@ -59,9 +65,18 @@ public class ClassicSudoku extends SudokuGame {
             }
         }
 
-        for (int i = 0; i < 40; i++) {
-            int row = random.nextInt(9);
-            int col = random.nextInt(9);
+        int cellsToRemove = switch (difficulty) {
+            case EASY -> 20;   // 20 пустых клеток
+            case MEDIUM -> 40; // 40 пустых клеток
+            case HARD -> 55;   // 55 пустых клеток
+        };
+
+        for (int i = 0; i < cellsToRemove; i++) {
+            int row, col;
+            do {
+                row = random.nextInt(9);
+                col = random.nextInt(9);
+            } while (board[row][col] == 0);
             board[row][col] = 0;
         }
 
