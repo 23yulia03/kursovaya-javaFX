@@ -66,9 +66,9 @@ public class ClassicSudoku extends SudokuGame {
         }
 
         int cellsToRemove = switch (difficulty) {
-            case EASY -> 20;   // 20 пустых клеток
-            case MEDIUM -> 40; // 40 пустых клеток
-            case HARD -> 55;   // 55 пустых клеток
+            case EASY -> 30;   // 30 пустых клеток
+            case MEDIUM -> 35; // 35 пустых клеток
+            case HARD -> 45;   // 45 пустых клеток
         };
 
         for (int i = 0; i < cellsToRemove; i++) {
