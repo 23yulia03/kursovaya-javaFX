@@ -1,5 +1,7 @@
 package com.example.gamefx2;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -7,12 +9,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class Controller {
-
-    @FXML
-    private VBox rootVBox;
 
     @FXML
     private GridPane gridPane;
@@ -26,8 +25,19 @@ public class Controller {
     @FXML
     private Label rulesLabel;
 
+    @FXML
+    private Label timerLabel;
+
+    @FXML
+    private Label levelLabel;
+
     private TextField[][] cells;
     private ClassicSudoku game;
+
+    private int secondsElapsed = 0;  // Секунды, прошедшие с начала игры
+    private Timeline timer;  // Таймер
+
+    private int highlightedValue = -1; // Хранение текущей подсвеченной цифры (по умолчанию нет подсветки)
 
     public void initializeGame() {
         game = new ClassicSudoku();
@@ -35,6 +45,7 @@ public class Controller {
         game.initializeGame();
         initializeGrid();
         initializeRules();
+        initializeTimer();  // Запуск таймера при начале игры
     }
 
     private void initializeDifficultyComboBox() {
@@ -52,7 +63,20 @@ public class Controller {
             game.setDifficulty(difficulty);
             game.initializeGame();
             initializeGrid(); // Перерисовываем поле
+            levelLabel.setText("Уровень: " + selectedDifficulty); // Обновляем метку уровня
         });
+    }
+
+    private void initializeTimer() {
+        secondsElapsed = 0;  // Сброс времени в начале игры
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            secondsElapsed++;
+            int minutes = secondsElapsed / 60;  // Вычисляем минуты
+            int seconds = secondsElapsed % 60;  // Вычисляем секунды
+            timerLabel.setText(String.format("Время: %02d:%02d", minutes, seconds));  // Отображаем в формате MM:SS
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();  // Запускаем таймер
     }
 
     private void initializeGrid() {
@@ -83,23 +107,30 @@ public class Controller {
                     baseStyle += "-fx-background-color: #d0d0d0; -fx-text-fill: #000000;";
                 }
 
-                // Жирные границы для квадратов 3x3
+                // Черные границы для квадратов 3x3
                 if (row % 3 == 0) baseStyle += " -fx-border-top-width: 2px;";
                 if (col % 3 == 0) baseStyle += " -fx-border-left-width: 2px;";
                 if (row == 8) baseStyle += " -fx-border-bottom-width: 2px;";
                 if (col == 8) baseStyle += " -fx-border-right-width: 2px;";
 
+                // Утолщенные границы по бокам квадратов 3x3
+                if (row % 3 == 0 || row % 3 == 2) {
+                    if (col % 3 == 0) {
+                        baseStyle += " -fx-border-left-width: 9px;"; // Утолщение левой границы
+                    }
+                    if (col % 3 == 2) {
+                        baseStyle += " -fx-border-right-width: 9px;"; // Утолщение правой границы
+                    }
+                }
+
+                // Добавление стиля к текстовому полю
                 textField.setStyle(baseStyle);
 
-                // Добавляем обработчик фокуса
-                final int blockRow = row / 3;
-                final int blockCol = col / 3;
-
-                textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        highlightBlock(blockRow, blockCol, true);  // Выделяем блок
-                    } else {
-                        highlightBlock(blockRow, blockCol, false); // Убираем выделение
+                // Обработчик клика на ячейку
+                textField.setOnMouseClicked(event -> {
+                    int value = (textField.getText().isEmpty()) ? 0 : Integer.parseInt(textField.getText());
+                    if (highlightedValue != value) {
+                        highlightSameValue(value);
                     }
                 });
 
@@ -109,22 +140,38 @@ public class Controller {
         }
     }
 
-    private void highlightBlock(int blockRow, int blockCol, boolean highlight) {
-        String highlightStyle = "-fx-background-color: #c0e0ff;"; // Голубой фон для выделенного блока
+    private void highlightSameValue(int value) {
+        if (highlightedValue == value) return;
+        removeHighlight();
 
-        for (int row = blockRow * 3; row < blockRow * 3 + 3; row++) {
-            for (int col = blockCol * 3; col < blockCol * 3 + 3; col++) {
+        // Подсветить все ячейки с новой цифрой
+        String highlightStyle = "-fx-background-color: #add8e6;"; // Нежно-голубой фон для выделения
+
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
                 TextField cell = cells[row][col];
-                if (highlight) {
+                if (!cell.getText().isEmpty() && Integer.parseInt(cell.getText()) == value) {
                     cell.setStyle(cell.getStyle() + highlightStyle);
-                } else {
-                    // Убираем только выделение, оставляя другие стили
-                    cell.setStyle(cell.getStyle().replace(highlightStyle, ""));
                 }
             }
         }
+
+        highlightedValue = value;
     }
 
+    private void removeHighlight() {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                TextField cell = cells[row][col];
+                String currentStyle = cell.getStyle();
+                if (currentStyle.contains("-fx-background-color: #add8e6;")) {
+                    cell.setStyle(currentStyle.replace("-fx-background-color: #add8e6;", ""));
+                }
+            }
+        }
+
+        highlightedValue = -1;
+    }
 
     private void initializeRules() {
         rulesLabel.setText("В классическом судоку игровое поле – это 9 блоков размером 3х3, \n" +
@@ -154,7 +201,16 @@ public class Controller {
         Alert alert = new Alert(isCorrect ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
         alert.setTitle(isCorrect ? "Победа!" : "Проигрыш!");
         alert.setHeaderText(null);
-        alert.setContentText(isCorrect ? "Поздравляем! Вы решили судоку!" : "Упс! Попробуйте еще раз.");
+
+        if (isCorrect) {
+            // Форматируем сообщение с временем
+            int minutes = secondsElapsed / 60;
+            int seconds = secondsElapsed % 60;
+            alert.setContentText("Поздравляем! Вы решили судоку за " + String.format("%02d:%02d", minutes, seconds));
+        } else {
+            alert.setContentText("Упс! Попробуйте еще раз.");
+        }
+
         alert.showAndWait();
     }
 }

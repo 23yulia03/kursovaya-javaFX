@@ -2,11 +2,15 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
 
 <VBox alignment="center" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.gamefx2.Controller">
+    <!-- Заголовок для выбора уровня игры -->
+    <Label text="Выберите уровень игры:" style="-fx-font-size: 18px;"/>
+    <Label fx:id="levelLabel" style="-fx-font-size: 16px;"/>
     <ComboBox fx:id="difficultyComboBox" style="-fx-font-size: 16px;" />
     <Label fx:id="rulesLabel" style="-fx-font-size: 14px; -fx-padding: 10px;" />
     <GridPane fx:id="gridPane" alignment="TOP_CENTER" />
+    <Label fx:id="timerLabel" style="-fx-font-size: 16px;"/>
     <Button fx:id="checkButton" onAction="#checkSolution" text="Проверить решение" style="-fx-font-size: 16px;" />
 </VBox>
-
