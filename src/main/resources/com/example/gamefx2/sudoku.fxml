@@ -2,15 +2,26 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Pos?>
 
-<VBox alignment="center" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.gamefx2.Controller">
-    <!-- Заголовок для выбора уровня игры -->
-    <Label text="Выберите уровень игры:" style="-fx-font-size: 18px;"/>
-    <Label fx:id="levelLabel" style="-fx-font-size: 16px;"/>
-    <ComboBox fx:id="difficultyComboBox" style="-fx-font-size: 16px;" />
+<VBox alignment="center" prefHeight="500.0" prefWidth="399.0" spacing="20" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gamefx2.Controller">
+    <!-- Горизонтальный блок для текста и выпадающего списка -->
+    <HBox alignment="CENTER" spacing="10">
+        <Label style="-fx-font-size: 18px;" text="Выберите уровень игры:" />
+        <ComboBox fx:id="difficultyComboBox" style="-fx-font-size: 16px;" prefWidth="150.0" />
+    </HBox>
+
+    <!-- Правила игры -->
     <Label fx:id="rulesLabel" style="-fx-font-size: 14px; -fx-padding: 10px;" />
+
+    <!-- Поле судоку -->
     <GridPane fx:id="gridPane" alignment="TOP_CENTER" />
-    <Label fx:id="timerLabel" style="-fx-font-size: 16px;"/>
-    <Button fx:id="checkButton" onAction="#checkSolution" text="Проверить решение" style="-fx-font-size: 16px;" />
+
+    <!-- Уровень игры -->
+    <Label fx:id="levelLabel" style="-fx-font-size: 16px;" />
+
+    <!-- Таймер -->
+    <Label fx:id="timerLabel" style="-fx-font-size: 16px;" />
+
+    <!-- Кнопка проверки решения -->
+    <Button fx:id="checkButton" onAction="#checkSolution" style="-fx-font-size: 16px;" text="Проверить решение" />
 </VBox>
