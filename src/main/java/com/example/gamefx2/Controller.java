@@ -34,8 +34,8 @@ public class Controller {
     private TextField[][] cells;
     private ClassicSudoku game;
 
-    private int secondsElapsed = 0;  // Секунды, прошедшие с начала игры
-    private Timeline timer;  // Таймер
+    private int secondsElapsed = 0; // Секунды, прошедшие с начала игры
+    private Timeline timer; // Таймер
 
     private int highlightedValue = -1; // Хранение текущей подсвеченной цифры (по умолчанию нет подсветки)
 
@@ -45,7 +45,6 @@ public class Controller {
         game.initializeGame();
         initializeGrid();
         initializeRules();
-        initializeTimer();  // Запуск таймера при начале игры
     }
 
     private void initializeDifficultyComboBox() {
@@ -60,23 +59,39 @@ public class Controller {
                 case "Сложный" -> Difficulty.HARD;
                 default -> Difficulty.MEDIUM;
             };
+
+            // Установить новый уровень сложности
             game.setDifficulty(difficulty);
+
+            // Перезапустить игру
             game.initializeGame();
             initializeGrid(); // Перерисовываем поле
-            levelLabel.setText("Уровень: " + selectedDifficulty); // Обновляем метку уровня
+
+            // Обновить метку уровня
+            levelLabel.setText("Уровень: " + selectedDifficulty);
+
+            // Перезапустить таймер
+            resetAndStartTimer();
         });
     }
 
-    private void initializeTimer() {
-        secondsElapsed = 0;  // Сброс времени в начале игры
+    private void resetAndStartTimer() {
+        if (timer != null) {
+            timer.stop(); // Останавливаем текущий таймер
+        }
+
+        secondsElapsed = 0; // Сбрасываем счетчик времени
+        timerLabel.setText("Время: 00:00"); // Обнуляем отображение таймера
+
         timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             secondsElapsed++;
-            int minutes = secondsElapsed / 60;  // Вычисляем минуты
-            int seconds = secondsElapsed % 60;  // Вычисляем секунды
-            timerLabel.setText(String.format("Время: %02d:%02d", minutes, seconds));  // Отображаем в формате MM:SS
+            int minutes = secondsElapsed / 60; // Вычисляем минуты
+            int seconds = secondsElapsed % 60; // Вычисляем секунды
+            timerLabel.setText(String.format("Время: %02d:%02d", minutes, seconds)); // Отображаем в формате MM:SS
         }));
-        timer.setCycleCount(Timeline.INDEFINITE);
-        timer.play();  // Запускаем таймер
+
+        timer.setCycleCount(Timeline.INDEFINITE); // Таймер бесконечный
+        timer.play(); // Запуск таймера
     }
 
     private void initializeGrid() {
@@ -113,17 +128,6 @@ public class Controller {
                 if (row == 8) baseStyle += " -fx-border-bottom-width: 2px;";
                 if (col == 8) baseStyle += " -fx-border-right-width: 2px;";
 
-                // Утолщенные границы по бокам квадратов 3x3
-                if (row % 3 == 0 || row % 3 == 2) {
-                    if (col % 3 == 0) {
-                        baseStyle += " -fx-border-left-width: 9px;"; // Утолщение левой границы
-                    }
-                    if (col % 3 == 2) {
-                        baseStyle += " -fx-border-right-width: 9px;"; // Утолщение правой границы
-                    }
-                }
-
-                // Добавление стиля к текстовому полю
                 textField.setStyle(baseStyle);
 
                 // Обработчик клика на ячейку
@@ -203,7 +207,6 @@ public class Controller {
         alert.setHeaderText(null);
 
         if (isCorrect) {
-            // Форматируем сообщение с временем
             int minutes = secondsElapsed / 60;
             int seconds = secondsElapsed % 60;
             alert.setContentText("Поздравляем! Вы решили судоку за " + String.format("%02d:%02d", minutes, seconds));
