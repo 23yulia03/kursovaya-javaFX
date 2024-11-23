@@ -103,34 +103,36 @@ public class Controller {
             for (int col = 0; col < 9; col++) {
                 TextField textField = new TextField();
                 textField.setPrefSize(50, 50);
-                textField.setStyle("-fx-font-size: 20px;");
                 textField.setText(board[row][col] == 0 ? "" : String.valueOf(board[row][col]));
                 textField.setEditable(board[row][col] == 0);
 
-                // Стиль для ячейки
-                String baseStyle = "-fx-font-size: 20px; -fx-border-color: black; -fx-border-width: 0.5px;";
+                // Формируем стиль для ячейки
+                StringBuilder style = new StringBuilder("-fx-font-size: 20px; -fx-alignment: center; -fx-border-color: black;");
 
-                // Чередующийся фон блоков 3x3
+                // Добавляем тонкие внутренние границы
+                style.append(" -fx-border-width: 1px;");
+
+                // Выделяем толстые границы для квадратов 3x3
+                if (row % 3 == 0) style.append(" -fx-border-top-width: 3px;");
+                if (col % 3 == 0) style.append(" -fx-border-left-width: 3px;");
+                if (row == 8) style.append(" -fx-border-bottom-width: 3px;");
+                if (col == 8) style.append(" -fx-border-right-width: 3px;");
+
+                // Цвет фона для удобства чтения
                 if ((row / 3 + col / 3) % 2 == 0) {
-                    baseStyle += "-fx-background-color: #f0f0f0;";
+                    style.append(" -fx-background-color: #f9f9f9;"); // Светлый фон
                 } else {
-                    baseStyle += "-fx-background-color: #ffffff;";
+                    style.append(" -fx-background-color: #ffffff;"); // Белый фон
                 }
 
-                // Для начальных чисел (нередактируемых)
+                // Если ячейка фиксированная (начальные числа)
                 if (board[row][col] != 0) {
-                    baseStyle += "-fx-background-color: #d0d0d0; -fx-text-fill: #000000;";
+                    style.append(" -fx-background-color: #dcdcdc; -fx-text-fill: black;"); // Фиксированные числа
                 }
 
-                // Черные границы для квадратов 3x3
-                if (row % 3 == 0) baseStyle += " -fx-border-top-width: 2px;";
-                if (col % 3 == 0) baseStyle += " -fx-border-left-width: 2px;";
-                if (row == 8) baseStyle += " -fx-border-bottom-width: 2px;";
-                if (col == 8) baseStyle += " -fx-border-right-width: 2px;";
+                textField.setStyle(style.toString());
 
-                textField.setStyle(baseStyle);
-
-                // Обработчик клика на ячейку
+                // Обработчик клика для подсветки одинаковых чисел
                 textField.setOnMouseClicked(event -> {
                     int value = (textField.getText().isEmpty()) ? 0 : Integer.parseInt(textField.getText());
                     if (highlightedValue != value) {
@@ -143,6 +145,7 @@ public class Controller {
             }
         }
     }
+
 
     private void highlightSameValue(int value) {
         if (highlightedValue == value) return;
