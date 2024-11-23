@@ -112,11 +112,11 @@ public class Controller {
                 // Добавляем тонкие внутренние границы
                 style.append(" -fx-border-width: 1px;");
 
-                // Выделяем толстые границы для квадратов 3x3
-                if (row % 3 == 0) style.append(" -fx-border-top-width: 3px;");
-                if (col % 3 == 0) style.append(" -fx-border-left-width: 3px;");
-                if (row == 8) style.append(" -fx-border-bottom-width: 3px;");
-                if (col == 8) style.append(" -fx-border-right-width: 3px;");
+                // Выделяем ещё более толстые границы для квадратов 3x3
+                if (row % 3 == 0) style.append(" -fx-border-top-width: 5px;"); // Толстая верхняя граница
+                if (col % 3 == 0) style.append(" -fx-border-left-width: 5px;"); // Толстая левая граница
+                if (row == 8) style.append(" -fx-border-bottom-width: 5px;"); // Толстая нижняя граница
+                if (col == 8) style.append(" -fx-border-right-width: 5px;"); // Толстая правая граница
 
                 // Цвет фона для удобства чтения
                 if ((row / 3 + col / 3) % 2 == 0) {
