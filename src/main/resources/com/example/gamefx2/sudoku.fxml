@@ -14,7 +14,8 @@
     <Label fx:id="rulesLabel" style="-fx-font-size: 14px; -fx-padding: 10px;" />
 
     <!-- Поле судоку -->
-    <GridPane fx:id="gridPane" alignment="TOP_CENTER" />
+    <GridPane fx:id="gridPane" alignment="CENTER" prefWidth="360.0" prefHeight="360.0">
+    </GridPane>
 
     <!-- Уровень игры -->
     <Label fx:id="levelLabel" style="-fx-font-size: 16px;" />
