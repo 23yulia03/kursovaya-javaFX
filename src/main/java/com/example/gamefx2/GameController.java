@@ -3,27 +3,23 @@ package com.example.gamefx2;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Controller {
+import java.util.Optional;
+
+public class GameController {
 
     @FXML
     private GridPane gridPane;
 
     @FXML
     private Button checkButton;
-
-    @FXML
-    private ComboBox<String> difficultyComboBox;
-
-    @FXML
-    private Label rulesLabel;
 
     @FXML
     private Label timerLabel;
@@ -39,40 +35,30 @@ public class Controller {
 
     private int highlightedValue = -1; // Хранение текущей подсвеченной цифры (по умолчанию нет подсветки)
 
-    public void initializeGame() {
-        game = new ClassicSudoku();
-        initializeDifficultyComboBox();
-        game.initializeGame();
-        initializeGrid();
-        initializeRules();
+    private Stage primaryStage;
+    private String difficulty;
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
-    private void initializeDifficultyComboBox() {
-        difficultyComboBox.getItems().addAll("Легкий", "Средний", "Сложный");
-        difficultyComboBox.setValue("Средний"); // Уровень по умолчанию
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
 
-        difficultyComboBox.setOnAction(event -> {
-            String selectedDifficulty = difficultyComboBox.getValue();
-            Difficulty difficulty = switch (selectedDifficulty) {
-                case "Легкий" -> Difficulty.EASY;
-                case "Средний" -> Difficulty.MEDIUM;
-                case "Сложный" -> Difficulty.HARD;
-                default -> Difficulty.MEDIUM;
-            };
-
-            // Установить новый уровень сложности
-            game.setDifficulty(difficulty);
-
-            // Перезапустить игру
-            game.initializeGame();
-            initializeGrid(); // Перерисовываем поле
-
-            // Обновить метку уровня
-            levelLabel.setText("Уровень: " + selectedDifficulty);
-
-            // Перезапустить таймер
-            resetAndStartTimer();
-        });
+    public void initializeGame() {
+        game = new ClassicSudoku();
+        Difficulty gameDifficulty = switch (difficulty) {
+            case "Легкий" -> Difficulty.EASY;
+            case "Средний" -> Difficulty.MEDIUM;
+            case "Сложный" -> Difficulty.HARD;
+            default -> Difficulty.EASY;
+        };
+        game.setDifficulty(gameDifficulty);
+        game.initializeGame();
+        initializeGrid();
+        levelLabel.setText("Уровень: " + difficulty);
+        resetAndStartTimer();
     }
 
     private void resetAndStartTimer() {
@@ -112,11 +98,11 @@ public class Controller {
                 // Добавляем тонкие внутренние границы
                 style.append(" -fx-border-width: 1px;");
 
-                // Выделяем ещё более толстые границы для квадратов 3x3
-                if (row % 3 == 0) style.append(" -fx-border-top-width: 5px;"); // Толстая верхняя граница
-                if (col % 3 == 0) style.append(" -fx-border-left-width: 5px;"); // Толстая левая граница
-                if (row == 8) style.append(" -fx-border-bottom-width: 5px;"); // Толстая нижняя граница
-                if (col == 8) style.append(" -fx-border-right-width: 5px;"); // Толстая правая граница
+                // Выделяем жирные границы для квадратов 3x3
+                if (row % 3 == 0) style.append(" -fx-border-top-width: 3px;"); // Жирная верхняя граница
+                if (col % 3 == 0) style.append(" -fx-border-left-width: 3px;"); // Жирная левая граница
+                if (row == 8) style.append(" -fx-border-bottom-width: 3px;"); // Жирная нижняя граница
+                if (col == 8) style.append(" -fx-border-right-width: 3px;"); // Жирная правая граница
 
                 // Цвет фона для удобства чтения
                 if ((row / 3 + col / 3) % 2 == 0) {
@@ -145,7 +131,6 @@ public class Controller {
             }
         }
     }
-
 
     private void highlightSameValue(int value) {
         if (highlightedValue == value) return;
@@ -180,16 +165,6 @@ public class Controller {
         highlightedValue = -1;
     }
 
-    private void initializeRules() {
-        rulesLabel.setText("В классическом судоку игровое поле – это 9 блоков размером 3х3, \n" +
-                "в которые необходимо вписывать значения от 1 до 9. \n" +
-                "\n" +
-                "Основные правила судоку такие:\n" +
-                "1) числа по вертикали не должны повторяться;\n" +
-                "2) числа по горизонтали не должны дублироваться;\n" +
-                "3) число может встречаться в квадрате 3х3 только 1 раз.");
-    }
-
     @FXML
     private void checkSolution() {
         int[][] userBoard = new int[9][9];
@@ -218,5 +193,64 @@ public class Controller {
         }
 
         alert.showAndWait();
+
+        if (isCorrect) {
+            showRestartOrMainMenuAlert();
+        } else {
+            showRestartAlert();
+        }
+    }
+
+    private void showRestartOrMainMenuAlert() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Победа!");
+        alert.setHeaderText(null);
+        alert.setContentText("Вы хотите решить еще раз или вернуться в главное меню?");
+
+        ButtonType restartButton = new ButtonType("Решить еще раз");
+        ButtonType mainMenuButton = new ButtonType("Вернуться в главное меню");
+        alert.getButtonTypes().setAll(restartButton, mainMenuButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get() == restartButton) {
+                initializeGame();
+            } else if (result.get() == mainMenuButton) {
+                goToMainMenu();
+            }
+        }
+    }
+
+    private void showRestartAlert() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Проигрыш!");
+        alert.setHeaderText(null);
+        alert.setContentText("Вы хотите начать сначала?");
+
+        ButtonType restartButton = new ButtonType("Начать сначала");
+        ButtonType mainMenuButton = new ButtonType("Вернуться в главное меню");
+        alert.getButtonTypes().setAll(restartButton, mainMenuButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get() == restartButton) {
+                initializeGame();
+            } else if (result.get() == mainMenuButton) {
+                goToMainMenu();
+            }
+        }
+    }
+
+    private void goToMainMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainMenu.fxml"));
+            Parent root = loader.load();
+            MainMenuController mainMenuController = loader.getController();
+            mainMenuController.setPrimaryStage(primaryStage);
+
+            primaryStage.setScene(new Scene(root, 630, 800));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

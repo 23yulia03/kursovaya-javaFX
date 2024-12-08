@@ -10,10 +10,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("sudoku.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainMenu.fxml"));
         Parent root = loader.load();
-        Controller controller = loader.getController();
-        controller.initializeGame();
+        MainMenuController mainMenuController = loader.getController();
+        mainMenuController.setPrimaryStage(primaryStage);
 
         primaryStage.setTitle("Судоку");
         primaryStage.setScene(new Scene(root, 630, 800));

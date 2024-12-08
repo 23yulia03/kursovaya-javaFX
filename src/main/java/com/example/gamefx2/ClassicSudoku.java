@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class ClassicSudoku extends SudokuGame {
 
-    private Difficulty difficulty = Difficulty.MEDIUM;
+    private Difficulty difficulty = Difficulty.EASY;
 
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;

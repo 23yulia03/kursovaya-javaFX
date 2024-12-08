@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="center" prefHeight="500.0" prefWidth="399.0" spacing="20" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gamefx2.GameController">
+    <!-- Поле судоку -->
+    <GridPane fx:id="gridPane" alignment="CENTER" prefWidth="360.0" prefHeight="360.0">
+    </GridPane>
+
+    <!-- Уровень игры -->
+    <Label fx:id="levelLabel" style="-fx-font-size: 16px;" />
+
+    <!-- Таймер -->
+    <Label fx:id="timerLabel" style="-fx-font-size: 16px;" />
+
+    <!-- Кнопка проверки решения -->
+    <Button fx:id="checkButton" onAction="#checkSolution" style="-fx-font-size: 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;" text="Проверить решение" />
+</VBox>
