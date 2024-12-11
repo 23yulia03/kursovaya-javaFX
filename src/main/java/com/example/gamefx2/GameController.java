@@ -48,12 +48,21 @@ public class GameController {
 
     public void initializeGame() {
         game = new ClassicSudoku();
-        Difficulty gameDifficulty = switch (difficulty) {
-            case "Легкий" -> Difficulty.EASY;
-            case "Средний" -> Difficulty.MEDIUM;
-            case "Сложный" -> Difficulty.HARD;
-            default -> Difficulty.EASY;
-        };
+        Difficulty gameDifficulty;
+        switch (difficulty) {
+            case "Легкий":
+                gameDifficulty = Difficulty.EASY;
+                break;
+            case "Средний":
+                gameDifficulty = Difficulty.MEDIUM;
+                break;
+            case "Сложный":
+                gameDifficulty = Difficulty.HARD;
+                break;
+            default:
+                gameDifficulty = Difficulty.EASY;
+                break;
+        }
         game.setDifficulty(gameDifficulty);
         game.initializeGame();
         initializeGrid();
@@ -103,7 +112,6 @@ public class GameController {
                 if (col % 3 == 0) style.append(" -fx-border-left-width: 3px;"); // Жирная левая граница
                 if (row == 8) style.append(" -fx-border-bottom-width: 3px;"); // Жирная нижняя граница
                 if (col == 8) style.append(" -fx-border-right-width: 3px;"); // Жирная правая граница
-
                 // Цвет фона для удобства чтения
                 if ((row / 3 + col / 3) % 2 == 0) {
                     style.append(" -fx-background-color: #f9f9f9;"); // Светлый фон
@@ -210,7 +218,6 @@ public class GameController {
         ButtonType restartButton = new ButtonType("Решить еще раз");
         ButtonType mainMenuButton = new ButtonType("Вернуться в главное меню");
         alert.getButtonTypes().setAll(restartButton, mainMenuButton);
-
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
             if (result.get() == restartButton) {

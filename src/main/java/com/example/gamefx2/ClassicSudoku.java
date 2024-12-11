@@ -65,11 +65,20 @@ public class ClassicSudoku extends SudokuGame {
             }
         }
 
-        int cellsToRemove = switch (difficulty) {
-            case EASY -> 30;   // 30 пустых клеток
-            case MEDIUM -> 35; // 35 пустых клеток
-            case HARD -> 45;   // 45 пустых клеток
-        };
+        int cellsToRemove;
+        switch (difficulty) {
+            case EASY:
+                cellsToRemove = 30;  // 30 пустых клеток
+                break;
+            case MEDIUM:
+                cellsToRemove = 35;  // 35 пустых клеток
+                break;
+            case HARD:
+                cellsToRemove = 45;  // 45 пустых клеток
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown difficulty: " + difficulty);
+        }
 
         for (int i = 0; i < cellsToRemove; i++) {
             int row, col;
